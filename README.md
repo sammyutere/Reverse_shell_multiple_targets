@@ -20,3 +20,25 @@ self.clients = []: This initializes an empty list to keep track of connected cli
 self.current_client = None: This variable is used to keep track of the currently selected client (if any) for sending commands or receiving data.  
 self.exit_flag = False: This flag is used to control the server's main loop. Setting this flag to True will signal the server to shut down gracefully.  
 self.lock = threading.Lock(): This creates a threading lock object, which is a synchronization primitive. Locks are used to ensure that only one thread can access or modify shared resources at a time, preventing race conditions and ensuring data integrity.
+
+**How starting tcp server works**
+
+The run method is the part of the Server class that starts the TCP server and begins listening for incoming connections from clients (or "bots" in the context of a reverse shell). Here's a breakdown of what happens in this method:  
+
+Creating a Socket:
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:: This line creates a new socket using the with statement, ensuring that the socket is automatically closed when it's no longer needed. The socket.AF_INET argument specifies that the socket will use IPv4 addressing, and socket.SOCK_STREAM indicates that it's a TCP socket, which provides reliable, connection-oriented communication.  
+Binding the Socket:
+server_socket.bind((self.host, self.port)): The bind method associates the socket with a specific network interface and port number. In this case, it binds the socket to the host and port attributes of the Server instance, preparing it to listen for incoming connections on that address and port.  
+Listening for Connections:
+server_socket.listen(10): This line tells the socket to start listening for incoming connections. The argument 10 specifies the maximum number of queued connections (the backlog) before the server starts to refuse new connections. This does not limit the total number of concurrent connections, just how many can be waiting for acceptance.  
+Starting the Server Message:
+print(f"Server listening on port {self.port}..."): Prints a message to the console indicating that the server is up and running, listening for connections on the specified port.  
+Handling Incoming Connections:
+connection_thread = threading.Thread(target=self.wait_for_connections, args=(server_socket,)): This line initializes a new Thread object, setting its target to the self.wait_for_connections method with the server_socket as an argument. This method (not shown in the snippet) is presumably designed to continuously accept incoming connections in a loop and add them to the self.clients list.  
+connection_thread.start(): Starts the thread, invoking the self.wait_for_connections method in a separate thread of execution. This allows the server to continue executing the rest of the run method without blocking while waiting for connections.  
+Server Main Loop:
+while not self.exit_flag:: This loop continues to execute as long as self.exit_flag remains False. Inside this loop, the server can perform tasks such as managing connected clients or handling server commands.  
+if self.clients:: Checks if there are any connected clients in the self.clients list.  
+self.select_client(): A method (not shown in the snippet) presumably allowing the server operator to select one of the connected clients for interaction. This could involve sending commands to the client or receiving data.  
+self.handle_client(): Another method (not shown) that likely handles the interaction with the selected client. This could involve reading commands from the server operator, sending them to the client, and displaying the client's response.  
+This structure sets up the server to listen for and manage multiple client connections in a non-blocking manner, using threads to handle connection acceptance and client management concurrently.
