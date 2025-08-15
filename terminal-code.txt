@@ -4,3 +4,4 @@ touch server.py client.py #Create new empty files named server.py and client.py 
 vi server.py #Opens the empty file, paste the code in the server.py file, follow instructions in the README file to save and quit
 python server.py #Run the server.py script
 python client.py #Run in a separate terminal window (or on the client machine) the client.py script
+#Select the client index number and issue command such as 'ls' to test.
