@@ -57,3 +57,8 @@ class Server:
             client_socket.send(command.encode('utf-8'))
             response = client_socket.recv(1024)
             print(response.decode('utf-8'))
+
+            # Running the server
+if __name__ == "__main__":
+    server = Server()
+    server.run()
