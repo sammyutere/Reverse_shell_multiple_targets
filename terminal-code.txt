@@ -2,3 +2,5 @@ mkdir project #Create your project folder called "project"
 cd ~/project #Change the current directory to the project folder located in your home directory 
 touch server.py client.py #Create new empty files named server.py and client.py in the current directory
 vi server.py #Opens the empty file, paste the code in the server.py file, follow instructions in the README file to save and quit
+python server.py #Run the server.py script
+python client.py #Run in a separate terminal window (or on the client machine) the client.py script
