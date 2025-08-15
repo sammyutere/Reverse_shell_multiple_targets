@@ -1,5 +1,17 @@
 A reverse shell is created using Python, which allows control of multiple compromised machines, also referred to as bots. Unlike traditional shells, a reverse shell initiates a connection from the bot to the controller, enabling management of remote hosts even behind firewalls or NAT. This method is widely used in cybersecurity practices for penetration testing and managing controlled environments in a secure manner.
 
+**How to use this project**
+
+Type the commands in the terminal-code.txt on your vscode terminal.   
+
+Create the server.py and client.py files in your project directory. Use touch server.py and touch client.py  
+
+To open the files,in your terminal type vi server.py and vi client.py  
+
+Press i key on your key board and paste the code.  
+
+Press esc key, press colon : key, type wq and press enter key to save and exit.
+
 **How initialising the server class works**
 
 The Server class is designed to create a server that can handle multiple client connections, commonly referred to as "bots" in the context of a reverse shell application.  
