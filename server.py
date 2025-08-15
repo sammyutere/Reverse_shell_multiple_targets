@@ -25,3 +25,11 @@ class Server:
                 if self.clients:
                     self.select_client()
                     self.handle_client()
+
+# Accept incoming connections
+    def wait_for_connections(self, server_socket):
+        while not self.exit_flag:
+            client_socket, client_address = server_socket.accept()
+            print(f"New connection from {client_address[0]}")
+            with self.lock:
+                self.clients.append((client_socket, client_address))
