@@ -23,7 +23,7 @@ self.lock = threading.Lock(): This creates a threading lock object, which is a s
 
 **How starting tcp server works**
 
-The run method is the part of the Server class that starts the TCP server and begins listening for incoming connections from clients (or "bots" in the context of a reverse shell). Here's a breakdown of what happens in this method:  
+The run method is the part of the Server class that starts the TCP server and begins listening for incoming connections from clients (or "bots" in the context of a reverse shell).    
 
 Creating a Socket:
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:: This line creates a new socket using the with statement, ensuring that the socket is automatically closed when it's no longer needed. The socket.AF_INET argument specifies that the socket will use IPv4 addressing, and socket.SOCK_STREAM indicates that it's a TCP socket, which provides reliable, connection-oriented communication.  
@@ -42,3 +42,18 @@ if self.clients:: Checks if there are any connected clients in the self.clients 
 self.select_client(): A method (not shown in the snippet) presumably allowing the server operator to select one of the connected clients for interaction. This could involve sending commands to the client or receiving data.  
 self.handle_client(): Another method (not shown) that likely handles the interaction with the selected client. This could involve reading commands from the server operator, sending them to the client, and displaying the client's response.  
 This structure sets up the server to listen for and manage multiple client connections in a non-blocking manner, using threads to handle connection acceptance and client management concurrently.
+
+**How accepting incoming connections work**
+
+The wait_for_connections method is designed to continuously listen for and accept incoming client connections on the server. This method is intended to run on a separate thread, allowing the server to perform other tasks (like interacting with connected clients) without being blocked by the accept call, which waits for a new connection.    
+
+Continuous Listening Loop:
+while not self.exit_flag:: This loop keeps running as long as self.exit_flag is False. The purpose of this flag is to provide a controlled way to stop the server, including this listening loop. When self.exit_flag is set to True, the loop will terminate, effectively stopping the server from accepting new connections.  
+Accepting Connections:
+client_socket, client_address = server_socket.accept(): The accept method waits for an incoming connection. When a client connects, it returns a new socket object (client_socket) representing the connection, and a tuple (client_address) containing the client's IP address and port number. This line blocks the execution of the thread until a new connection is received.  
+Connection Notification:
+print(f"New connection from {client_address[0]}"): Once a new connection is accepted, a message is printed to the console indicating the IP address of the newly connected client. This is useful for logging and monitoring purposes.  
+Thread-Safe Client Management:
+with self.lock:: This uses a threading lock (self.lock), acquired at the beginning of the block and automatically released at the end. The purpose of the lock is to ensure thread-safe access to shared resources, in this case, the self.clients list. This is crucial in a multi-threaded environment to prevent data corruption and ensure consistency.  
+self.clients.append((client_socket, client_address)): Inside the protected block, the method adds the new client's socket and address as a tuple to the self.clients list. This list tracks all connected clients, allowing the server to interact with them individually later.
+This method ensures that the server can handle incoming connections concurrently with other tasks, safely managing a list of connected clients for further interaction. The use of threading and locks is essential for maintaining performance and data integrity in a concurrent environment.  
