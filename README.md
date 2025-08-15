@@ -81,4 +81,19 @@ if command == '!q':: Checks if the command to quit the server (!q) is entered. I
 client_socket.send(command.encode('utf-8')): Sends the entered command to the client. The command is encoded to bytes using UTF-8 encoding, as network communication requires data to be in bytes.  
 response = client_socket.recv(1024): Waits for and receives the response from the client. The recv(1024) call specifies that up to 1024 bytes will be read. For larger responses, this might need to be adjusted or handled in a loop.  
 print(response.decode('utf-8')): Decodes the received byte response using UTF-8 and prints it. This shows the server operator the result of the executed command on the client machine.  
-These functions collectively enable the server operator to manage multiple connected clients, issue commands to selected clients, and view their responses, which are foundational capabilities for a reverse shell server.
+These functions collectively enable the server operator to manage multiple connected clients, issue commands to selected clients, and view their responses, which are foundational capabilities for a reverse shell server.  
+
+**How running the server works**
+
+This code snippet is the entry point for running the Server class defined earlier.  
+
+Explanation:
+if __name__ == "__main__"::
+
+This line checks if the script is being run directly (not imported as a module). If true, the following code block will execute.
+server = Server():  
+
+This creates an instance of the Server class, initializing it with the default host and port.
+server.run():  
+
+This line calls the run method on the server instance. (Note: The run method needs to be defined in the Server class for this to work. It typically handles starting the server and accepting client connections.)
