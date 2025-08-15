@@ -2,11 +2,11 @@ A reverse shell is created using Python, which allows control of multiple compro
 
 **How initialising the server class works**
 
-The Server class is designed to create a server that can handle multiple client connections, commonly referred to as "bots" in the context of a reverse shell application. Let's break down the components and functionalities defined in the initialization method (**init**):
+The Server class is designed to create a server that can handle multiple client connections, commonly referred to as "bots" in the context of a reverse shell application.  
 
 Import Statements:
-import socket: This imports Python's built-in socket module, which provides the necessary functionalities for network communications. Sockets are the endpoints of a bidirectional communication channel and can be used to connect and communicate with clients.
-import threading: This imports the threading module, enabling the creation of multiple threads within a process. This is essential for handling multiple client connections simultaneously without blocking the main execution flow of the server.
+import socket: This imports Python's built-in socket module, which provides the necessary functionalities for network communications. Sockets are the endpoints of a bidirectional communication channel and can be used to connect and communicate with clients.  
+import threading: This imports the threading module, enabling the creation of multiple threads within a process. This is essential for handling multiple client connections simultaneously without blocking the main execution flow of the server.  
 Class Definition:
 class Server:: This line defines the Server class, which encapsulates the functionalities required for the server-side operations of a reverse shell.
 Initialization Method (**init**):
