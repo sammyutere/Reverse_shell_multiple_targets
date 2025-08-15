@@ -57,3 +57,28 @@ Thread-Safe Client Management:
 with self.lock:: This uses a threading lock (self.lock), acquired at the beginning of the block and automatically released at the end. The purpose of the lock is to ensure thread-safe access to shared resources, in this case, the self.clients list. This is crucial in a multi-threaded environment to prevent data corruption and ensure consistency.  
 self.clients.append((client_socket, client_address)): Inside the protected block, the method adds the new client's socket and address as a tuple to the self.clients list. This list tracks all connected clients, allowing the server to interact with them individually later.
 This method ensures that the server can handle incoming connections concurrently with other tasks, safely managing a list of connected clients for further interaction. The use of threading and locks is essential for maintaining performance and data integrity in a concurrent environment.  
+
+**How client interaction functions work**
+
+The select_client and handle_client functions are critical components for interacting with connected clients in a reverse shell server environment.  
+
+select_client Function
+This function is responsible for listing all currently connected clients and allowing the server operator to select one for interaction:  
+
+print("Available clients:"): Displays a message indicating that the list of available clients will follow.  
+for index, (_, addr) in enumerate(self.clients):: Iterates through the self.clients list, which contains tuples of client sockets and addresses. The _ is a placeholder for the client socket, which is not needed in this context, and addr is the client address. The enumerate function adds an index to each item.  
+print(f"[{index}]-> {addr[0]}"): For each client, prints an index and the IP address of the client. This makes it easy for the operator to see how many and which clients are connected.  
+index = int(input("Select a client by index: ")): Prompts the server operator to enter the index of the client they wish to interact with. This input is converted to an integer and stored in index.  
+self.current_client = self.clients[index]: Sets self.current_client to the client tuple (socket and address) corresponding to the chosen index. This client will be the target of subsequent commands.  
+handle_client Function
+This function facilitates sending commands to and receiving responses from the selected client:  
+
+client_socket, client_address = self.current_client: Unpacks the self.current_client tuple into client_socket and client_address.  
+while True:: Enters an infinite loop, allowing the server operator to continuously send commands to the client until a special command is entered.  
+command = input(f"{client_address[0]}:~# "): Prompts the server operator to enter a command. The prompt includes the IP address of the current client for clarity.  
+if command == '!ch':: Checks if the special command !ch is entered, which is a signal to change the current client. If so, breaks out of the loop to allow the server operator to select a new client.  
+if command == '!q':: Checks if the command to quit the server (!q) is entered. If so, sets self.exit_flag to True to terminate the server loop and breaks out of the client handling loop.  
+client_socket.send(command.encode('utf-8')): Sends the entered command to the client. The command is encoded to bytes using UTF-8 encoding, as network communication requires data to be in bytes.  
+response = client_socket.recv(1024): Waits for and receives the response from the client. The recv(1024) call specifies that up to 1024 bytes will be read. For larger responses, this might need to be adjusted or handled in a loop.  
+print(response.decode('utf-8')): Decodes the received byte response using UTF-8 and prints it. This shows the server operator the result of the executed command on the client machine.  
+These functions collectively enable the server operator to manage multiple connected clients, issue commands to selected clients, and view their responses, which are foundational capabilities for a reverse shell server.
